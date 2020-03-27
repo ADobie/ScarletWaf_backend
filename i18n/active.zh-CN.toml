@@ -1,0 +1,29 @@
+[age_err]
+description = "default form age err msg"
+hash = "sha1-691a94bb042c8b1d5a6f54bac7ec3e0afbd1e264"
+other = "年龄是必填的"
+
+[email_err]
+description = "default form email err msg"
+hash = "sha1-0760c2632a616ce843b5d7c7551ded0cf4d66986"
+other = "邮箱地址不合法"
+
+[name_err]
+description = "default form name err msg"
+hash = "sha1-465a1395eb205222a07eca97f689a94b429c14d4"
+other = "用户名是必填的"
+
+[phone_err]
+description = "default form phone err msg"
+hash = "sha1-1d534f003f0a82dbab4ad6bb8842c94cd2c9bd7c"
+other = "手机格式不合法"
+
+[server_address_err]
+description = "default form server address err msg"
+hash = "sha1-17e4abdcb3ce001fa2d1a8c139bd0bd653f9ae7b"
+other = "服务器地址必须是一个IP地址或者是域名"
+
+[welcome_msg]
+description = "Default Welome MSG"
+hash = "sha1-680342b93398e888567d8066eb212393537369f9"
+other = "你好"

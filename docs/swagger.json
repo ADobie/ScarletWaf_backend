@@ -1,0 +1,188 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "This is a sample server celler server.",
+        "title": "Swagger Example API",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "API Support",
+            "url": "http://www.swagger.io/support",
+            "email": "support@swagger.io"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/",
+    "paths": {
+        "/user": {
+            "put": {
+                "description": "用户密码更改",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "用户密码更改",
+                "parameters": [
+                    {
+                        "description": "修改密码的表单",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/common.UpdatePasswordForm"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/common.OperationResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/common.OperationResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "用户注册",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "用户注册",
+                "parameters": [
+                    {
+                        "description": "注册的表单",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/common.OperationResponse"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/common.OperationResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/common.OperationResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/rule": {
+            "post": {
+                "description": "给某个用户添加一条规则",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "添加规则",
+                "parameters": [
+                    {
+                        "description": "所需要添加的规则，注意需要携带",
+                        "name": "rule",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/common.Rule"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "用户登录后获得的token",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "能显示么",
+                        "schema": {
+                            "$ref": "#/definitions/common.OperationResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "可以显示失败么",
+                        "schema": {
+                            "$ref": "#/definitions/common.OperationResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "common.OperationResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
+        "common.Rule": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "flag": {
+                    "type": "string"
+                },
+                "hit": {
+                    "type": "integer"
+                },
+                "host": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "uri": {
+                    "type": "string"
+                }
+            }
+        },
+        "common.UpdatePasswordForm": {
+            "type": "object",
+            "properties": {
+                "password": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

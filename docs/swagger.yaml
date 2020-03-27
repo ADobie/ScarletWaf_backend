@@ -1,0 +1,124 @@
+basePath: /
+definitions:
+  common.OperationResponse:
+    properties:
+      code:
+        type: integer
+      msg:
+        type: string
+    type: object
+  common.Rule:
+    properties:
+      content:
+        type: string
+      flag:
+        type: string
+      hit:
+        type: integer
+      host:
+        type: string
+      id:
+        type: integer
+      uri:
+        type: string
+    type: object
+  common.UpdatePasswordForm:
+    properties:
+      password:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is a sample server celler server.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Swagger Example API
+  version: "1.0"
+paths:
+  /user:
+    post:
+      consumes:
+      - application/json
+      description: 用户注册
+      parameters:
+      - description: 注册的表单
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/common.OperationResponse'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/common.OperationResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common.OperationResponse'
+      summary: 用户注册
+      tags:
+      - User
+    put:
+      consumes:
+      - application/json
+      description: 用户密码更改
+      parameters:
+      - description: 修改密码的表单
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/common.UpdatePasswordForm'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/common.OperationResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common.OperationResponse'
+      summary: 用户密码更改
+      tags:
+      - User
+  /user/rule:
+    post:
+      consumes:
+      - application/json
+      description: 给某个用户添加一条规则
+      parameters:
+      - description: 所需要添加的规则，注意需要携带
+        in: body
+        name: rule
+        required: true
+        schema:
+          $ref: '#/definitions/common.Rule'
+      - description: 用户登录后获得的token
+        in: header
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 能显示么
+          schema:
+            $ref: '#/definitions/common.OperationResponse'
+        "400":
+          description: 可以显示失败么
+          schema:
+            $ref: '#/definitions/common.OperationResponse'
+      summary: 添加规则
+swagger: "2.0"

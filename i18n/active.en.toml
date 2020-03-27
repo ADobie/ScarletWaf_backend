@@ -1,0 +1,23 @@
+[age_err]
+description = "default form age err msg"
+other = "Age field is required"
+
+[email_err]
+description = "default form email err msg"
+other = "Invalid Email format"
+
+[name_err]
+description = "default form name err msg"
+other = "Username is requried"
+
+[phone_err]
+description = "default form phone err msg"
+other = "Invalid Phone format"
+
+[server_address_err]
+description = "default form server address err msg"
+other = "Server address should either be a domain or ip"
+
+[welcome_msg]
+description = "Default Welome MSG"
+other = "Welcome Dude"
