@@ -1,25 +1,17 @@
 basePath: /
 definitions:
+  common.Account:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+    type: object
   common.OperationResponse:
     properties:
       code:
         type: integer
       msg:
-        type: string
-    type: object
-  common.Rule:
-    properties:
-      content:
-        type: string
-      flag:
-        type: string
-      hit:
-        type: integer
-      host:
-        type: string
-      id:
-        type: integer
-      uri:
         type: string
     type: object
   common.UpdatePasswordForm:
@@ -38,7 +30,7 @@ info:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   termsOfService: http://swagger.io/terms/
-  title: Swagger Example API
+  title: Scarlet Backend
   version: "1.0"
 paths:
   /user:
@@ -96,15 +88,15 @@ paths:
     post:
       consumes:
       - application/json
-      description: 给某个用户添加一条规则
+      description: addRule
       parameters:
-      - description: 所需要添加的规则，注意需要携带
+      - description: test
         in: body
         name: rule
         required: true
         schema:
-          $ref: '#/definitions/common.Rule'
-      - description: 用户登录后获得的token
+          $ref: '#/definitions/common.Account'
+      - description: test
         in: header
         name: token
         required: true
@@ -113,12 +105,12 @@ paths:
       - application/json
       responses:
         "200":
-          description: 能显示么
+          description: test
           schema:
-            $ref: '#/definitions/common.OperationResponse'
+            $ref: '#/definitions/common.Account'
         "400":
-          description: 可以显示失败么
+          description: test
           schema:
-            $ref: '#/definitions/common.OperationResponse'
-      summary: 添加规则
+            $ref: '#/definitions/common.Account'
+      summary: addRule
 swagger: "2.0"

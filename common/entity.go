@@ -7,7 +7,6 @@ import (
 )
 
 type Rule struct {
-	ID      int    `json:"id"`
 	Content string `json:"content"`
 	Hit     int    `json:"hit"`
 	URI     string `json:"uri"`
@@ -25,23 +24,23 @@ type User struct {
 
 type URI struct {
 	gorm.Model
-	Switch   Switch
+	Switch   Switch `gorm:"-"`
 	Path     string `json:"path"`
 	Host     string `json:"host"`
-	ServerID uint
+	ServerID uint   `json:"server_id"`
 }
 
 type Server struct {
 	gorm.Model
 	Domain string `json:"domain"`
 	IP     string `json:"ip"`
-	Switch Switch
-	UserID uint
+	Switch Switch `gorm:"-"`
+	Option Option `gorm:"-"`
+	UserID uint   `json:"user_id"`
 	URI    []URI
 }
 
 type Switch struct {
-	gorm.Model
 	IpBlacklist   bool
 	IpWhitelist   bool
 	GetArgsCheck  bool
@@ -50,7 +49,11 @@ type Switch struct {
 	UaCheck       bool
 	CCDefense     bool
 	SqlTokenCheck bool
-	URIID         uint
+}
+
+type Option struct {
+	CCRate    string
+	ProxyPass string
 }
 
 // TODO:关于rune和普通字符的长度问题 Register的验证

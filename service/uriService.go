@@ -1,11 +1,31 @@
 package service
 
-type URIService struct{}
+import (
+	"scarlet/common"
+)
 
-func NewURIService() *URIService {
-	return new(URIService)
+type UriService struct{}
+
+func NewURIService() *UriService {
+	return new(UriService)
 }
 
-//func getURIByUser(user common.User)([]common.URI){
-//
-//}
+func (u *UriService) Add(uri common.URI) {
+	mysqlClient.Create(&uri)
+	return
+}
+
+func (u *UriService) Own(uriId uint, serverId uint) bool {
+	var num int
+	mysqlClient.Table("uris").Where("id = ? and server_id = ?", uriId, serverId).Count(&num)
+	if num >= 1 {
+		return true
+	} else {
+		return false
+	}
+}
+
+func (u *UriService) Delete(uri common.URI) {
+	mysqlClient.Delete(uri)
+	return
+}

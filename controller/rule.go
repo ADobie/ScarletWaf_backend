@@ -4,18 +4,17 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 	"scarlet/common"
-	"scarlet/service"
 )
 
 // AddRule godoc
-// @Summary 添加规则
-// @Description 给某个用户添加一条规则
+// @Summary addRule
+// @Description addRule
 // @Accept json
 // @Produce json
-// @Param rule body common.Rule true "所需要添加的规则，注意需要携带"
-// @Param token header string true "用户登录后获得的token"
-// @Success 200 {object} common.OperationResponse "能显示么"
-// @Failure 400 {object} common.OperationResponse "可以显示失败么"
+// @Param rule body common.Account true "test"
+// @Param token header string true "test"
+// @Success 200 {object} common.Account "test"
+// @Failure 400 {object} common.Account "test"
 // @Router /user/rule [POST]
 func AddRule(c *gin.Context) {
 	rule := common.Rule{}
@@ -33,7 +32,7 @@ func AddRule(c *gin.Context) {
 	})
 }
 
-func GetRule(c *gin.Context) {
-	service.Echo("233")
-	c.String(200, "应该创建好了")
-}
+//func GetRule(c *gin.Context) {
+//	service.Echo("233")
+//	c.String(200, "应该创建好了")
+//}

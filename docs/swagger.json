@@ -2,7 +2,7 @@
     "swagger": "2.0",
     "info": {
         "description": "This is a sample server celler server.",
-        "title": "Swagger Example API",
+        "title": "Scarlet Backend",
         "termsOfService": "http://swagger.io/terms/",
         "contact": {
             "name": "API Support",
@@ -98,27 +98,27 @@
         },
         "/user/rule": {
             "post": {
-                "description": "给某个用户添加一条规则",
+                "description": "addRule",
                 "consumes": [
                     "application/json"
                 ],
                 "produces": [
                     "application/json"
                 ],
-                "summary": "添加规则",
+                "summary": "addRule",
                 "parameters": [
                     {
-                        "description": "所需要添加的规则，注意需要携带",
+                        "description": "test",
                         "name": "rule",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/common.Rule"
+                            "$ref": "#/definitions/common.Account"
                         }
                     },
                     {
                         "type": "string",
-                        "description": "用户登录后获得的token",
+                        "description": "test",
                         "name": "token",
                         "in": "header",
                         "required": true
@@ -126,15 +126,15 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "能显示么",
+                        "description": "test",
                         "schema": {
-                            "$ref": "#/definitions/common.OperationResponse"
+                            "$ref": "#/definitions/common.Account"
                         }
                     },
                     "400": {
-                        "description": "可以显示失败么",
+                        "description": "test",
                         "schema": {
-                            "$ref": "#/definitions/common.OperationResponse"
+                            "$ref": "#/definitions/common.Account"
                         }
                     }
                 }
@@ -142,6 +142,17 @@
         }
     },
     "definitions": {
+        "common.Account": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "common.OperationResponse": {
             "type": "object",
             "properties": {
@@ -149,29 +160,6 @@
                     "type": "integer"
                 },
                 "msg": {
-                    "type": "string"
-                }
-            }
-        },
-        "common.Rule": {
-            "type": "object",
-            "properties": {
-                "content": {
-                    "type": "string"
-                },
-                "flag": {
-                    "type": "string"
-                },
-                "hit": {
-                    "type": "integer"
-                },
-                "host": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "uri": {
                     "type": "string"
                 }
             }

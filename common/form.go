@@ -34,3 +34,16 @@ type LoginForm struct {
 type UpdatePasswordForm struct {
 	Password string `json:"password"`
 }
+
+// Page 第几页
+// Limit 一页最多
+// Flag base 或者 custom之一
+// Type get/post/header/cookie/ua/black_ip/white_ip 大小写无关
+type RulePage struct {
+	Page     uint   `json:"page"`
+	Limit    uint   `json:"limit"`
+	Flag     string `json:"flag"`
+	Type     string `json:"type"`
+	ServerID uint   `json:"server_id"`
+	URIID    uint   `json:"uri_id"`
+}

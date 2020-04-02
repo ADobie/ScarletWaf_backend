@@ -2,7 +2,6 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/spf13/viper"
 	_ "github.com/spf13/viper"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -30,22 +29,36 @@ func main() {
 	//viper.SetConfigName("scarlet.backend")
 	//viper.SetConfigType("yaml")
 	//viper.AddConfigPath(".")
-	viper.SetConfigFile("./scarlet.backend.yaml")
-	err := viper.ReadInConfig()
-	if err != nil {
-		tool.GetLogger().Fatal("缺少配置文件./scarlet.backend.toml")
-	}
+	//viper.SetConfigFile("./scarlet.backend.yaml")
+	//err := viper.ReadInConfig()
+	//if err != nil {
+	//	tool.GetLogger().Fatal("缺少配置文件./scarlet.backend.toml")
+	//}
+	//viper.Set("mysql.addr","127.0.0.1:3306")
+	//viper.Set("mysql.user","scarlet")
+	//viper.Set("mysql.password","scarlet")
+	//viper.Set("mysql.database","scarlet")
+	//viper.Set("redis.addr","127.0.0.1:3306")
+	//viper.Set("redis.db",0)
 	r := gin.Default()
-	r.LoadHTMLGlob("./templates/*")
+	r.Use(controller.JWT())
 	r.POST("/user", controller.AddUser)
-	r.POST("/user/server", controller.LoginRequired(), controller.UpdateServer)
-	r.GET("/register", func(c *gin.Context) {
-		c.HTML(200, "index.tpl", nil)
-	})
 	r.POST("/login", controller.UserLogin)
+	//r.POST("/user/password",controller.LoginRequired(),controller.UpdatePassword)
+	// 按照规定 delete 不需要读消息体... 不知道GO是否会读
+
+	userGroup := r.Group("/user")
+	userGroup.Use(controller.LoginRequired()) // 一个基于JWT的SESSION管理中间件
+	userGroup.PUT("/user/server", controller.UpdateServer)
+	userGroup.GET("/user/server", controller.GetServers)
+	userGroup.DELETE("/user/server", controller.DeleteServer)
+	userGroup.POST("/user/uri", controller.AddURI)
+	userGroup.DELETE("/user/uri", controller.DeleteURI)
+	userGroup.POST("/user/rule", controller.GetRules)
+
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	if err := r.Run(":8080"); err != nil {
-		tool.GetLogger(err)
+		tool.GetLogger().Fatal("Addres Already Used")
 	}
 
 }
