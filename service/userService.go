@@ -12,7 +12,7 @@ func NewUserService() *UserService {
 
 // TODO:不知道是否能关联地查出server？
 
-func (this *UserService) GetUserByID(id uint) common.User {
+func (this *UserService) Get(id uint) common.User {
 	user := common.User{}
 	mysqlClient.Find(&user, id)
 	return user
@@ -30,13 +30,13 @@ func (this *UserService) GetUserByID(id uint) common.User {
 //
 //}
 
-func (this *UserService) AddUser(user common.User) {
+func (this *UserService) Add(user common.User) {
 	// 在业务逻辑层要做好检查
 	mysqlClient.Create(&user)
 	return
 }
 
-func (this *UserService) UpdateUserServers(user common.User) {
+func (this *UserService) UpdateServers(user common.User) {
 	old := common.User{}
 	mysqlClient.First(&old, user.ID)
 	old.Servers = user.Servers

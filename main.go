@@ -44,21 +44,31 @@ func main() {
 	r.Use(controller.JWT())
 	r.POST("/user", controller.AddUser)
 	r.POST("/login", controller.UserLogin)
-	//r.POST("/user/password",controller.LoginRequired(),controller.UpdatePassword)
-	// 按照规定 delete 不需要读消息体... 不知道GO是否会读
 
+	// 按照规定 delete 不需要读消息体... 不知道GO是否会读
+	// rule不存在主键，或者说需要多个条件。不太适合用纯Restful 修改API
 	userGroup := r.Group("/user")
 	userGroup.Use(controller.LoginRequired()) // 一个基于JWT的SESSION管理中间件
-	userGroup.PUT("/user/server", controller.UpdateServer)
-	userGroup.GET("/user/server", controller.GetServers)
-	userGroup.DELETE("/user/server", controller.DeleteServer)
-	userGroup.POST("/user/uri", controller.AddURI)
-	userGroup.DELETE("/user/uri", controller.DeleteURI)
-	userGroup.POST("/user/rule", controller.GetRules)
+
+	userGroup.POST("/server/add", controller.AddServer)
+	userGroup.POST("/server/get", controller.GetServers)
+	userGroup.POST("/server/delete", controller.DeleteServer)
+
+	userGroup.POST("/uri/add", controller.AddURI)
+	userGroup.POST("/uri/delete", controller.DeleteURI)
+	userGroup.POST("/uri/get", controller.GetURI)
+
+	userGroup.POST("/rule/get", controller.GetRules)
+	userGroup.POST("/rule/delete", controller.DeleteRule)
+	userGroup.POST("/rule/add", controller.AddRule)
+
+	userGroup.POST("/switch/waf", controller.WafStatus)
+	userGroup.POST("/switch/change", controller.ChangeSwitch)
+	userGroup.POST("/switch/get", controller.GetSwitch)
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	if err := r.Run(":8080"); err != nil {
-		tool.GetLogger().Fatal("Addres Already Used")
+		tool.GetLogger().Fatal("Address Already Used")
 	}
 
 }

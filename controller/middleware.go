@@ -22,7 +22,7 @@ func LoginRequired() gin.HandlerFunc {
 			c.Next()
 		} else {
 			if session["login"].(bool) != false {
-				user := userService.GetUserByID(uint(session["user_id"].(float64)))
+				user := userService.Get(uint(session["user_id"].(float64)))
 				session["user"] = user
 				c.Next()
 			} else {
@@ -31,6 +31,8 @@ func LoginRequired() gin.HandlerFunc {
 					Msg:  "未登录",
 					Data: nil,
 				})
+				c.Abort()
+				return
 			}
 			return
 		}
@@ -56,6 +58,7 @@ func JWT() gin.HandlerFunc {
 			session["login"] = false
 			c.Set("session", session)
 			c.Next()
+			return
 			// set cookie with session
 		} else {
 			token, err := jwt.Parse(val.Value, func(token *jwt.Token) (i interface{}, err error) {
@@ -68,6 +71,7 @@ func JWT() gin.HandlerFunc {
 					Msg:  "Hacker!",
 					Data: nil,
 				})
+				c.Abort()
 				return
 			} else {
 				var session = token.Claims.(jwt.MapClaims)

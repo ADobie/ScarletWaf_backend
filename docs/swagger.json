@@ -1,176 +1,352 @@
 {
-    "swagger": "2.0",
-    "info": {
-        "description": "This is a sample server celler server.",
-        "title": "Scarlet Backend",
-        "termsOfService": "http://swagger.io/terms/",
-        "contact": {
-            "name": "API Support",
-            "url": "http://www.swagger.io/support",
-            "email": "support@swagger.io"
-        },
-        "license": {
-            "name": "Apache 2.0",
-            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
-        },
-        "version": "1.0"
-    },
-    "host": "localhost:8080",
-    "basePath": "/",
-    "paths": {
-        "/user": {
-            "put": {
-                "description": "用户密码更改",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "User"
-                ],
-                "summary": "用户密码更改",
-                "parameters": [
-                    {
-                        "description": "修改密码的表单",
-                        "name": "user",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/common.UpdatePasswordForm"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/common.OperationResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/common.OperationResponse"
-                        }
-                    }
-                }
+  "swagger": "2.0",
+  "info": {
+    "title": "Untitled Paw Document",
+    "version": "v0.0.0"
+  },
+  "host": "localhost:8080",
+  "schemes": [
+    "http"
+  ],
+  "basePath": "/",
+  "paths": {
+    "/user": {
+      "post": {
+        "summary": "注册",
+        "description": "",
+        "operationId": "56304500-ec9d-472a-a17a-dcd57f95bc60",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "{\"name\":\"heyao\",\"email\":\"1018987488@qq.com\",\"password\":\"123456\"}"
             },
-            "post": {
-                "description": "用户注册",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "User"
-                ],
-                "summary": "用户注册",
-                "parameters": [
-                    {
-                        "description": "注册的表单",
-                        "name": "user",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/common.OperationResponse"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/common.OperationResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/common.OperationResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/user/rule": {
-            "post": {
-                "description": "addRule",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "addRule",
-                "parameters": [
-                    {
-                        "description": "test",
-                        "name": "rule",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/common.Account"
-                        }
-                    },
-                    {
-                        "type": "string",
-                        "description": "test",
-                        "name": "token",
-                        "in": "header",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "test",
-                        "schema": {
-                            "$ref": "#/definitions/common.Account"
-                        }
-                    },
-                    "400": {
-                        "description": "test",
-                        "schema": {
-                            "$ref": "#/definitions/common.Account"
-                        }
-                    }
-                }
-            }
+            "in": "body",
+            "name": "body"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "no response description was provided for this operation"
+          }
         }
+      }
     },
-    "definitions": {
-        "common.Account": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                }
-            }
-        },
-        "common.OperationResponse": {
-            "type": "object",
-            "properties": {
-                "code": {
-                    "type": "integer"
-                },
-                "msg": {
-                    "type": "string"
-                }
-            }
-        },
-        "common.UpdatePasswordForm": {
-            "type": "object",
-            "properties": {
-                "password": {
-                    "type": "string"
-                }
-            }
+    "/login": {
+      "post": {
+        "summary": "登录",
+        "description": "",
+        "operationId": "36cac101-7de2-4859-b3d1-0e1b04a1fa2b",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "{\"email\":\"1018987488@qq.com\",\"password\":\"123456\"}"
+            },
+            "in": "body",
+            "name": "body"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "no response description was provided for this operation"
+          }
         }
+      }
+    },
+    "/user/server/get": {
+      "post": {
+        "summary": "查看Servers",
+        "description": "",
+        "operationId": "f5b5449e-961c-42c5-9807-2b45ac8f762d",
+        "parameters": [
+          {
+            "type": "string",
+            "default": "SCARLET=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbiI6dHJ1ZSwidXNlcl9pZCI6MX0.ClwG7ed4enOJv0m1BL-IF8_5eHpCCHbWannH5A2qa2Y; Path=/; Domain=localhost; Max-Age=3600; HttpOnly; Secure; SameSite",
+            "name": "Cookie",
+            "required": false,
+            "in": "header"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "no response description was provided for this operation"
+          }
+        }
+      }
+    },
+    "/user/server": {
+      "post": {
+        "summary": "添加Server",
+        "description": "",
+        "operationId": "f0d76c2c-0929-4952-ab1c-9b9b5089b90c",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "type": "string",
+            "default": "9b49c9d1f6d96dab03aa3ae02d02233d",
+            "name": "token",
+            "required": false,
+            "in": "header"
+          },
+          {
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "[{\"domain\":\"waf.heyao.top\",\"ip\":\"112.126.62.226\"}]"
+            },
+            "in": "body",
+            "name": "body"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "no response description was provided for this operation"
+          }
+        }
+      }
+    },
+    "/user/uri/add": {
+      "post": {
+        "summary": "添加URI",
+        "description": "",
+        "operationId": "154c9290-8626-411b-ab31-7ca6a632b01a",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "type": "string",
+            "default": "SCARLET=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbiI6dHJ1ZSwidXNlcl9pZCI6MX0.ClwG7ed4enOJv0m1BL-IF8_5eHpCCHbWannH5A2qa2Y; Path=/; Domain=localhost; Max-Age=3600; HttpOnly; Secure; SameSite",
+            "name": "Cookie",
+            "required": false,
+            "in": "header"
+          },
+          {
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "{\"path\":\"/login\",\"server_id\":1}"
+            },
+            "in": "body",
+            "name": "body"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "no response description was provided for this operation"
+          }
+        }
+      }
+    },
+    "/user/uri/get": {
+      "post": {
+        "summary": "查看URI",
+        "description": "",
+        "operationId": "6a0aeb47-27d5-4449-a92e-8135d3cfe247",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "type": "string",
+            "default": "SCARLET=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbiI6dHJ1ZSwidXNlcl9pZCI6MX0.ClwG7ed4enOJv0m1BL-IF8_5eHpCCHbWannH5A2qa2Y; Path=/; Domain=localhost; Max-Age=3600; HttpOnly; Secure; SameSite",
+            "name": "Cookie",
+            "required": false,
+            "in": "header"
+          },
+          {
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "{\"server_id\":1}"
+            },
+            "in": "body",
+            "name": "body"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "no response description was provided for this operation"
+          }
+        }
+      }
+    },
+    "/user/rule/get": {
+      "post": {
+        "summary": "查询规则",
+        "description": "",
+        "operationId": "bdaadf70-be9d-424a-8fdf-bb142867000b",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "type": "string",
+            "default": "SCARLET=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbiI6dHJ1ZSwidXNlcl9pZCI6MX0.ClwG7ed4enOJv0m1BL-IF8_5eHpCCHbWannH5A2qa2Y; Path=/; Domain=localhost; Max-Age=3600; HttpOnly; Secure; SameSite",
+            "name": "Cookie",
+            "required": false,
+            "in": "header"
+          },
+          {
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "{\"page\":1,\"limit\":15,\"server_id\":1,\"uri_id\":1,\"type\":\"GET\",\"flag\":\"BASE\"}"
+            },
+            "in": "body",
+            "name": "body"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "no response description was provided for this operation"
+          }
+        }
+      }
+    },
+    "/user/rule/add": {
+      "post": {
+        "summary": "添加规则",
+        "description": "",
+        "operationId": "43ea2bb8-93dc-4d5f-aff8-afd9daafcb0a",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "type": "string",
+            "default": "SCARLET=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbiI6dHJ1ZSwidXNlcl9pZCI6MX0.ClwG7ed4enOJv0m1BL-IF8_5eHpCCHbWannH5A2qa2Y; Path=/; Domain=localhost; Max-Age=3600; HttpOnly; Secure; SameSite",
+            "name": "Cookie",
+            "required": false,
+            "in": "header"
+          },
+          {
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "{\"server_id\":1,\"uri_id\":1,\"rules\":[{\"content\":\"asdasdsad\",\"type\":\"GET\",\"flag\":\"BASE\"}]}"
+            },
+            "in": "body",
+            "name": "body"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "no response description was provided for this operation"
+          }
+        }
+      }
+    },
+    "/user/switch/waf": {
+      "post": {
+        "summary": "关闭waf",
+        "description": "",
+        "operationId": "cf3c5953-cd8f-4628-85eb-a012c660140e",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "type": "string",
+            "default": "SCARLET=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbiI6dHJ1ZSwidXNlcl9pZCI6MX0.ClwG7ed4enOJv0m1BL-IF8_5eHpCCHbWannH5A2qa2Y; Path=/; Domain=localhost; Max-Age=3600; HttpOnly; Secure; SameSite",
+            "name": "Cookie",
+            "required": false,
+            "in": "header"
+          },
+          {
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "{\"server_id\":1,\"config_value\":false}"
+            },
+            "in": "body",
+            "name": "body"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "no response description was provided for this operation"
+          }
+        }
+      }
+    },
+    "/user/switch/change": {
+      "post": {
+        "summary": "修改开关",
+        "description": "",
+        "operationId": "5b64526d-3201-4a04-99ec-9f6cf52ac6c7",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "type": "string",
+            "default": "SCARLET=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbiI6dHJ1ZSwidXNlcl9pZCI6MX0.ClwG7ed4enOJv0m1BL-IF8_5eHpCCHbWannH5A2qa2Y; Path=/; Domain=localhost; Max-Age=3600; HttpOnly; Secure; SameSite",
+            "name": "Cookie",
+            "required": false,
+            "in": "header"
+          },
+          {
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "{\"server_id\":1,\"config_name\":\"get\",\"config_value\":true}"
+            },
+            "in": "body",
+            "name": "body"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "no response description was provided for this operation"
+          }
+        }
+      }
+    },
+    "/user/switch/get": {
+      "post": {
+        "summary": "查看配置",
+        "description": "",
+        "operationId": "398662b1-9091-4412-bcff-55944336eafd",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "type": "string",
+            "default": "SCARLET=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbiI6dHJ1ZSwidXNlcl9pZCI6MX0.ClwG7ed4enOJv0m1BL-IF8_5eHpCCHbWannH5A2qa2Y; Path=/; Domain=localhost; Max-Age=3600; HttpOnly; Secure; SameSite",
+            "name": "Cookie",
+            "required": false,
+            "in": "header"
+          },
+          {
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "{\"server_id\":1,\"uri_id\":1}"
+            },
+            "in": "body",
+            "name": "body"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "no response description was provided for this operation"
+          }
+        }
+      }
     }
+  },
+  "tags": []
 }

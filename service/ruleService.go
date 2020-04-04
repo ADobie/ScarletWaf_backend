@@ -112,3 +112,65 @@ func (r *RuleService) GetRulePage(page common.RulePage) []common.Rule {
 //func Echo(cmd string) {
 //	fmt.Println(cmd)
 //}
+
+func (r *RuleService) Delete(rule common.Rule) {
+	var key string
+	switch rule.Flag {
+	case "BASE":
+		key = tool.BaseRuleKeyGen(rule.Host, rule.Type)
+	case "CUSTOM":
+		key = tool.CustomRuleKeyGen(rule.Host, rule.URI, rule.Type)
+	}
+	_, err := redis.Int(redisPool.Get().Do("zrem", key, rule.Content))
+	if err != nil {
+		panic(err)
+	}
+}
+
+// 开发时使用painc
+// 完成后返回error
+func (r *RuleService) Add(rules []common.Rule) error {
+	if rules == nil {
+		panic("rules is nil")
+	}
+	conn := redisPool.Get()
+	for _, rule := range rules {
+		var key string
+		switch rule.Flag {
+		case "BASE":
+			key = tool.BaseRuleKeyGen(rule.Host, rule.Type)
+		case "CUSTOM":
+			key = tool.CustomRuleKeyGen(rule.Host, rule.URI, rule.Type)
+		}
+		conn.Send("zadd", key, rule.Content)
+	}
+	conn.Flush()
+	_, err := redis.Int(conn.Receive())
+	if err != nil {
+		return err
+	} else {
+		return nil
+	}
+}
+
+func (r *RuleService) MustAdd(rules []common.Rule) {
+	if rules == nil {
+		panic("rules is nil")
+	}
+	conn := redisPool.Get()
+	for _, rule := range rules {
+		var key string
+		switch rule.Flag {
+		case "BASE":
+			key = tool.BaseRuleKeyGen(rule.Host, rule.Type)
+		case "CUSTOM":
+			key = tool.CustomRuleKeyGen(rule.Host, rule.URI, rule.Type)
+		}
+		conn.Send("zadd", key, 0, rule.Content)
+	}
+	conn.Flush()
+	_, err := redis.Int(conn.Receive())
+	if err != nil {
+		panic(err)
+	}
+}

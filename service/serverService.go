@@ -11,17 +11,12 @@ func NewServerService() *ServerService {
 	return new(ServerService)
 }
 
-func (s *ServerService) GetURIByServerID(serverID uint) (uris []common.URI) {
-	mysqlClient.Where("server_id = ?", serverID).Find(&uris)
-	return
-}
-
-func (s *ServerService) GetServersByUserID(userId uint) (servers []common.Server) {
+func (s *ServerService) GetByUserID(userId uint) (servers []common.Server) {
 	mysqlClient.Where("user_id = ?", userId).Find(&servers)
 	return
 }
 
-func (s *ServerService) DeleteServerByServerID(serverID uint) {
+func (s *ServerService) Delete(serverID uint) {
 	mysqlClient.Delete(common.Server{
 		Model: gorm.Model{ID: serverID},
 	})
@@ -36,4 +31,11 @@ func (s *ServerService) Own(userId uint, serverID uint) bool {
 	} else {
 		return false
 	}
+}
+
+func (s *ServerService) Get(serverID uint) common.Server {
+	var server common.Server
+	server.ID = serverID
+	mysqlClient.First(&server)
+	return server
 }
