@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
@@ -28,8 +29,14 @@ var ruleService = service.NewRuleService()
 func AddUser(c *gin.Context) {
 	user := common.User{}
 	err := c.ShouldBindJSON(&user)
-	if err != nil {
+	if err != nil && common.DEVELOP {
 		logrus.WithField("Handler", "Add").Fatal("绑定json错误")
+		c.JSON(400, common.DataResponse{
+			Code: 400,
+			Msg:  "绑定JSON错误" + err.Error(),
+			Data: nil,
+		})
+		return
 	}
 	errs := user.Validate()
 	fmt.Printf("%v", errs)
@@ -37,21 +44,31 @@ func AddUser(c *gin.Context) {
 		if e, ok := errs.(validation.InternalError); ok {
 			logrus.WithField("Handler", "Add").Fatal("规则错误", e.InternalError())
 		} else {
+			data, _ := json.Marshal(e)
 			c.JSON(400, common.DataResponse{
 				Code: 400,
 				Msg:  "用户不合法",
-				Data: e,
+				Data: string(data),
 			})
 			return
 		}
 	}
-	userService.Add(user)
-	c.JSON(200, common.DataResponse{
-		Code: 200,
-		Msg:  "注册成功",
-		Data: nil,
-	})
-
+	if !userService.Exist(user) {
+		userService.Add(user)
+		c.JSON(200, common.DataResponse{
+			Code: 200,
+			Msg:  "注册成功",
+			Data: nil,
+		})
+		return
+	} else {
+		c.JSON(400, common.DataResponse{
+			Code: 400,
+			Msg:  "用户已存在",
+			Data: nil,
+		})
+		return
+	}
 }
 
 // UpdateUserPssword godoc

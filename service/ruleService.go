@@ -42,10 +42,7 @@ func (r *RuleService) GetRulePage(page common.RulePage) []common.Rule {
 	var results []common.Rule
 	switch page.Flag {
 	case "BASE":
-		server := common.Server{
-			Model: gorm.Model{ID: page.ServerID},
-		}
-		mysqlClient.First(&server)
+		server := serverService.Get(page.ServerID)
 		key := tool.BaseRuleKeyGen(server.Domain, page.Type)
 		start := (page.Page - 1) * page.Limit
 		rules, err := redis.IntMap(redisPool.Get().Do("zrange", key, start, start+page.Limit, "withscores"))
@@ -55,23 +52,19 @@ func (r *RuleService) GetRulePage(page common.RulePage) []common.Rule {
 		// debug
 		for rule, hit := range rules {
 			results = append(results, common.Rule{
-				Content: rule,
-				Hit:     hit,
-				URI:     "",
-				Host:    server.Domain,
-				Flag:    "BASE",
+				Content:  rule,
+				Hit:      hit,
+				URI:      "",
+				Host:     server.Domain,
+				Flag:     "BASE",
+				ServerID: page.ServerID,
+				Type:     page.Type,
 			})
 		}
 		return results
 	case "CUSTOM":
-		server := common.Server{
-			Model: gorm.Model{ID: page.ServerID},
-		}
-		mysqlClient.First(&server)
-		uri := common.URI{
-			Model: gorm.Model{ID: page.URIID},
-		}
-		mysqlClient.First(&uri)
+		server := serverService.Get(page.ServerID)
+		uri := uriService.Get(page.URIID)
 		key := tool.CustomRuleKeyGen(server.Domain, uri.Path, page.Type)
 		start := (page.Page - 1) * page.Limit
 		rules, err := redis.IntMap(redisPool.Get().Do("zrange", key, start, start+page.Limit, "withscores"))
@@ -81,11 +74,13 @@ func (r *RuleService) GetRulePage(page common.RulePage) []common.Rule {
 		// debug
 		for rule, hit := range rules {
 			results = append(results, common.Rule{
-				Content: rule,
-				Hit:     hit,
-				URI:     uri.Path,
-				Host:    server.Domain,
-				Flag:    "CUSTOM",
+				Content:  rule,
+				Hit:      hit,
+				URI:      uri.Path,
+				Host:     server.Domain,
+				Flag:     "CUSTOM",
+				ServerID: page.ServerID,
+				Type:     page.Type,
 			})
 		}
 		return results
@@ -114,6 +109,10 @@ func (r *RuleService) GetRulePage(page common.RulePage) []common.Rule {
 //}
 
 func (r *RuleService) Delete(rule common.Rule) {
+	server := serverService.Get(rule.ServerID)
+	uri := uriService.Get(rule.URIID)
+	rule.Host = server.Domain
+	rule.URI = uri.Path
 	var key string
 	switch rule.Flag {
 	case "BASE":

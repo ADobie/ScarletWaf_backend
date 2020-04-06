@@ -26,20 +26,35 @@ func GetRules(c *gin.Context) {
 		})
 		return
 	}
-	if serverService.Own(user.ID, rulePage.ServerID) && uriService.Own(rulePage.URIID, rulePage.ServerID) {
-		rules := ruleService.GetRulePage(rulePage)
-		c.JSON(200, common.DataResponse{
-			Code: 200,
-			Msg:  "获取成功",
-			Data: rules,
-		})
-		return
+	if serverService.Own(user.ID, rulePage.ServerID) {
+		if rulePage.URIID != 0 && !uriService.Own(rulePage.URIID, rulePage.ServerID) {
+			c.JSON(401, common.DataResponse{
+				Code: 401,
+				Msg:  "越权操作",
+				Data: nil,
+			})
+			return
+		} else {
+			if rulePage.URIID == 0 {
+				rulePage.Flag = "BASE"
+			} else {
+				rulePage.Flag = "CUSTOM"
+			}
+			rules := ruleService.GetRulePage(rulePage)
+			c.JSON(200, common.DataResponse{
+				Code: 200,
+				Msg:  "获取成功",
+				Data: rules,
+			})
+			return
+		}
 	} else {
 		c.JSON(401, common.DataResponse{
 			Code: 401,
 			Msg:  "越权操作",
 			Data: nil,
 		})
+		return
 	}
 }
 
@@ -58,6 +73,29 @@ func DeleteRule(c *gin.Context) {
 		})
 		return
 	}
+	// 表单验证
+	if rule.URIID == 0 {
+		rule.Flag = "BASE"
+	} else {
+		rule.Flag = "CUSTOM"
+	}
+	rule.Format()
+	if err := rule.Validate(); err != nil {
+		data, _ := json.Marshal(err)
+		c.JSON(406, common.DataResponse{
+			Code: 406,
+			Msg:  "表单不合法",
+			Data: string(data),
+		})
+		return
+	} else {
+		ruleService.Delete(rule)
+		c.JSON(200, common.OperationResponse{
+			Code: 200,
+			Msg:  "删除成功",
+		})
+		return
+	}
 	// 权限验证
 	if ok := serverService.Own(user.ID, rule.ServerID) && uriService.Own(rule.URIID, rule.ServerID); !ok {
 		c.JSON(401, common.OperationResponse{
@@ -66,10 +104,6 @@ func DeleteRule(c *gin.Context) {
 		})
 		return
 	} else {
-		server := serverService.Get(rule.ServerID)
-		uri := uriService.Get(rule.URIID)
-		rule.Host = server.Domain
-		rule.URI = uri.Path
 		ruleService.Delete(rule)
 		c.JSON(200, common.OperationResponse{
 			Code: 200,

@@ -37,7 +37,7 @@ type URI struct {
 	Host     string       `json:"host"`
 	ServerID uint         `json:"server_id"`
 	Switch   CustomSwitch `json:"-" gorm:"-"`
-	Option   Option       `gorm:"-"`
+	Option   Option       `gorm:"-" json:"-"`
 }
 
 func (u URI) Validate() error {

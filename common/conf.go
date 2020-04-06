@@ -16,3 +16,5 @@ type Conf struct {
 	Mysql MysqlConf `json:"mysql"`
 	Redis RedisConf `json:"redis"`
 }
+
+var DEVELOP = true
