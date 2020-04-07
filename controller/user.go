@@ -23,8 +23,8 @@ var ruleService = service.NewRuleService()
 // @Accept json
 // @Produce json
 // @Param user body common.OperationResponse true "注册的表单"
-// @Success 200 {object} common.OperationResponse true
-// @Failure 400 {object} common.OperationResponse true
+// @Success 200 {object} common.OperationResponse
+// @Failure 400 {object} common.OperationResponse
 // @Router /user [post]
 func AddUser(c *gin.Context) {
 	user := common.User{}
@@ -71,20 +71,20 @@ func AddUser(c *gin.Context) {
 	}
 }
 
-// UpdateUserPssword godoc
-// @Summary 用户密码更改
-// @Description 用户密码更改
-// @Tags User
-// @Accept json
-// @Produce json
-// @Param user body common.UpdatePasswordForm true "修改密码的表单"
-// @Success 200 {object} common.OperationResponse true
-// @Failure 400 {object} common.OperationResponse true
-// @Router /user [put]
 func UpdateUser(c *gin.Context) {
 
 }
 
+// Add godoc
+// @Summary 用户登录
+// @Description 用户登录
+// @Tags User
+// @Accept json
+// @Produce json
+// @Param user body common.User true "邮箱 密码必填"
+// @Success 200 {object} common.DataResponse
+// @Failure 400 {object} common.DataResponse
+// @Router /login [post]
 func UserLogin(c *gin.Context) {
 	var user common.User
 	err := c.ShouldBindJSON(&user)

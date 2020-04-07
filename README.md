@@ -12,9 +12,16 @@ The backend of scarlet
 - 配置文件读取（现在还有BUG总之没实现
 - <del>各类基本CURD API</del>
 - 日志处理。waf_core会产生日志到一个 per user的List中，后端读取、存储。也要考虑编排多用户的文件路径、考虑如何返回给前端
+- CPU信息+内存占用+硬盘读写速度、资源监控
 
 
 ### ChangeLog
+
+
+#### 4-7
+
+- 增加注释、自动生成的文档；
+- 修改客户端SESSION位置为自定义Header中，默认(SCARLET)
 
 
 #### 4-6

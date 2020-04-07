@@ -9,8 +9,14 @@ import (
 	"scarlet/common"
 )
 
-// 范围是 user-> server -> base -> Type
-// user -> server -> custom -> Type
+//@Summary 获取规则
+//@Tags rule
+//@Accept json
+//@Produce json
+//@Param rulePageForm body common.RulePage true "page为页号，limit为一页的最大数量，类型为get\post\ua\header\cookie之一"
+//@Success 200 {object} common.DataResponse{data=[]common.Rule} true
+//@Response 400 common.DataResponse true
+//@Router /user/rule/get [POST]
 func GetRules(c *gin.Context) {
 	var user common.User
 	session := c.MustGet("session").(jwt.MapClaims)
@@ -58,6 +64,14 @@ func GetRules(c *gin.Context) {
 	}
 }
 
+//@Summary 删除规则
+//@Tags rule
+//@Accept json
+//@Produce json
+//@Param rulePageForm body common.RulePage true "必须给定server_id ，uri_id可选 type为get\post\ua\header\cookie之一"
+//@Success 200 {object} common.OperationResponse true
+//@Response 400 common.DataResponse true
+//@Router /user/rule/delete [POST]
 func DeleteRule(c *gin.Context) {
 	var user common.User
 	session := c.MustGet("session").(jwt.MapClaims)
@@ -114,6 +128,14 @@ func DeleteRule(c *gin.Context) {
 
 }
 
+//@Summary 增加规则
+//@Tags rule
+//@Accept json
+//@Produce json
+//@Param rulePageForm body common.RulePage true "必须给定server_id 、content，uri_id可选 type为get\post\ua\header\cookie之一"
+//@Success 200 {object} common.OperationResponse true
+//@Response 400 common.DataResponse true
+//@Router /user/rule/add [POST]
 func AddRule(c *gin.Context) {
 	var user common.User
 	session := c.MustGet("session").(jwt.MapClaims)

@@ -8,8 +8,14 @@ import (
 	"scarlet/tool"
 )
 
-// 给某个服务器添加URI
-// TODO:并添加默认配置
+// @Summary 增加URI
+// @Tags uri
+// @Accept json
+// @Produce json
+// @Param uri body common.URI true "server_id、path必填"
+// @Success 200 {object} common.DataResponse{data=[]common.Server}
+// @Failure 400 {object} common.DataResponse
+// @Router /user/uri/add [post] 'Login required'
 func AddURI(c *gin.Context) {
 	var user common.User
 	session := c.MustGet("session").(jwt.MapClaims)
@@ -58,6 +64,14 @@ func AddURI(c *gin.Context) {
 	}
 }
 
+// @Summary 删除URI
+// @Tags uri
+// @Accept json
+// @Produce json
+// @Param uri body common.URI true "server_id、id必填"
+// @Success 200 {object} common.OperationResponse
+// @Failure 400 {object} common.DataResponse
+// @Router /user/uri/delete [post] 'Login required'
 func DeleteURI(c *gin.Context) {
 	var user common.User
 	session := c.MustGet("session").(jwt.MapClaims)
@@ -100,6 +114,14 @@ func DeleteURI(c *gin.Context) {
 	}
 }
 
+// @Summary 获取URI
+// @Tags uri
+// @Accept json
+// @Produce json
+// @Param uri body common.GetURIForm true "server_id必填"
+// @Success 200 {object} common.DataResponse{data=[]common.URI}
+// @Failure 400 {object} common.DataResponse
+// @Router /user/uri/get [post] 'Login required'
 func GetURI(c *gin.Context) {
 	var user common.User
 	var form common.GetURIForm

@@ -1,11 +1,55 @@
 basePath: /
 definitions:
-  common.Account:
+  common.BaseSwitch:
     properties:
-      id:
+      cc_defense:
+        type: boolean
+      cookie_check:
+        type: boolean
+      get_args_check:
+        type: boolean
+      ip_blacklist:
+        type: boolean
+      ip_whitelist:
+        type: boolean
+      post_args_check:
+        type: boolean
+      sql_token_check:
+        type: boolean
+      ua_check:
+        type: boolean
+    type: object
+  common.CustomSwitch:
+    properties:
+      cookie_check:
+        type: boolean
+      get_args_check:
+        type: boolean
+      ip_blacklist:
+        type: boolean
+      ip_whitelist:
+        type: boolean
+      post_args_check:
+        type: boolean
+    type: object
+  common.DataResponse:
+    properties:
+      code:
+        type: integer
+      data:
+        type: object
+      msg:
         type: string
-      name:
-        type: string
+    type: object
+  common.GetServerForm:
+    properties:
+      server_id:
+        type: integer
+    type: object
+  common.GetURIForm:
+    properties:
+      server_id:
+        type: integer
     type: object
   common.OperationResponse:
     properties:
@@ -14,10 +58,97 @@ definitions:
       msg:
         type: string
     type: object
-  common.UpdatePasswordForm:
+  common.Option:
     properties:
+      ccrate:
+        type: string
+      proxyPass:
+        type: string
+    type: object
+  common.Rule:
+    properties:
+      content:
+        type: string
+      flag:
+        type: string
+      hit:
+        type: integer
+      host:
+        type: string
+      server_id:
+        type: integer
+      type:
+        type: string
+      uri:
+        type: string
+      uri_id:
+        type: integer
+    type: object
+  common.RulePage:
+    properties:
+      flag:
+        type: string
+      limit:
+        type: integer
+      page:
+        type: integer
+      server_id:
+        type: integer
+      type:
+        type: string
+      uri_id:
+        type: integer
+    type: object
+  common.Server:
+    properties:
+      domain:
+        type: string
+      ip:
+        type: string
+      option:
+        $ref: '#/definitions/common.Option'
+        type: object
+      uri:
+        items:
+          $ref: '#/definitions/common.URI'
+        type: array
+      user_id:
+        type: integer
+      waf_status:
+        type: boolean
+    type: object
+  common.SwitchOperation:
+    properties:
+      config_name:
+        type: string
+      config_value:
+        type: boolean
+      server_id:
+        type: integer
+      uri_id:
+        type: integer
+    type: object
+  common.URI:
+    properties:
+      host:
+        type: string
+      path:
+        type: string
+      server_id:
+        type: integer
+    type: object
+  common.User:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
       password:
         type: string
+      servers:
+        items:
+          $ref: '#/definitions/common.Server'
+        type: array
     type: object
 host: localhost:8080
 info:
@@ -33,6 +164,32 @@ info:
   title: Scarlet Backend
   version: "1.0"
 paths:
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: 用户登录
+      parameters:
+      - description: 邮箱 密码必填
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/common.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/common.DataResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common.DataResponse'
+      summary: 用户登录
+      tags:
+      - User
   /user:
     post:
       consumes:
@@ -59,17 +216,87 @@ paths:
       summary: 用户注册
       tags:
       - User
-    put:
+  /user/rule/add:
+    post:
       consumes:
       - application/json
-      description: 用户密码更改
       parameters:
-      - description: 修改密码的表单
+      - description: 必须给定server_id 、content，uri_id可选 type为get\post\ua\header\cookie之一
         in: body
-        name: user
+        name: rulePageForm
         required: true
         schema:
-          $ref: '#/definitions/common.UpdatePasswordForm'
+          $ref: '#/definitions/common.RulePage'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/common.OperationResponse'
+      summary: 增加规则
+      tags:
+      - rule
+  /user/rule/delete:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 必须给定server_id ，uri_id可选 type为get\post\ua\header\cookie之一
+        in: body
+        name: rulePageForm
+        required: true
+        schema:
+          $ref: '#/definitions/common.RulePage'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/common.OperationResponse'
+      summary: 删除规则
+      tags:
+      - rule
+  /user/rule/get:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: page为页号，limit为一页的最大数量，类型为get\post\ua\header\cookie之一
+        in: body
+        name: rulePageForm
+        required: true
+        schema:
+          $ref: '#/definitions/common.RulePage'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.DataResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/common.Rule'
+                  type: array
+              type: object
+      summary: 获取规则
+      tags:
+      - rule
+  /user/server/delete:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: server_id为必要
+        in: body
+        name: servers
+        required: true
+        schema:
+          $ref: '#/definitions/common.GetServerForm'
       produces:
       - application/json
       responses:
@@ -80,37 +307,199 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/common.OperationResponse'
-      summary: 用户密码更改
+            $ref: '#/definitions/common.DataResponse'
+      summary: 删除服务
       tags:
-      - User
-  /user/rule:
+      - server
+  /user/server/get:
     post:
       consumes:
       - application/json
-      description: addRule
       parameters:
-      - description: test
+      - description: 服务器列表
         in: body
-        name: rule
+        name: servers
         required: true
         schema:
-          $ref: '#/definitions/common.Account'
-      - description: test
-        in: header
-        name: token
-        required: true
-        type: string
+          items:
+            $ref: '#/definitions/common.Server'
+          type: array
       produces:
       - application/json
       responses:
         "200":
-          description: test
+          description: OK
           schema:
-            $ref: '#/definitions/common.Account'
+            allOf:
+            - $ref: '#/definitions/common.DataResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/common.Server'
+                  type: array
+              type: object
         "400":
-          description: test
+          description: Bad Request
           schema:
-            $ref: '#/definitions/common.Account'
-      summary: addRule
+            $ref: '#/definitions/common.DataResponse'
+      summary: 添加Server
+      tags:
+      - server
+  /user/switch/change:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 必须填写config_name；不给uri_id则修改server
+        in: body
+        name: switchForm
+        required: true
+        schema:
+          $ref: '#/definitions/common.SwitchOperation'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/common.OperationResponse'
+      summary: 修改Server Switch或者URI Switch
+      tags:
+      - switch
+  /user/switch/get:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: server_id必填 uri_id选填
+        in: body
+        name: switchForm
+        required: true
+        schema:
+          $ref: '#/definitions/common.SwitchOperation'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.DataResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/common.BaseSwitch'
+              type: object
+      summary: 修改Server Switch或者URI Switch
+      tags:
+      - switch
+  /user/switch/waf:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 可以不填写config_name
+        in: body
+        name: switchForm
+        required: true
+        schema:
+          $ref: '#/definitions/common.SwitchOperation'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/common.OperationResponse'
+      summary: 控制waf开关
+      tags:
+      - switch
+  /user/uri/add:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: server_id、path必填
+        in: body
+        name: uri
+        required: true
+        schema:
+          $ref: '#/definitions/common.URI'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.DataResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/common.Server'
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common.DataResponse'
+      summary: 增加URI
+      tags:
+      - uri
+  /user/uri/delete:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: server_id、id必填
+        in: body
+        name: uri
+        required: true
+        schema:
+          $ref: '#/definitions/common.URI'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/common.OperationResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common.DataResponse'
+      summary: 删除URI
+      tags:
+      - uri
+  /user/uri/get:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: server_id必填
+        in: body
+        name: uri
+        required: true
+        schema:
+          $ref: '#/definitions/common.GetURIForm'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.DataResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/common.URI'
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common.DataResponse'
+      summary: 获取URI
+      tags:
+      - uri
 swagger: "2.0"

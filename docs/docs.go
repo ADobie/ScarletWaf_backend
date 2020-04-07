@@ -33,9 +33,9 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/user": {
-            "put": {
-                "description": "用户密码更改",
+        "/login": {
+            "post": {
+                "description": "用户登录",
                 "consumes": [
                     "application/json"
                 ],
@@ -45,15 +45,15 @@ var doc = `{
                 "tags": [
                     "User"
                 ],
-                "summary": "用户密码更改",
+                "summary": "用户登录",
                 "parameters": [
                     {
-                        "description": "修改密码的表单",
+                        "description": "邮箱 密码必填",
                         "name": "user",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/common.UpdatePasswordForm"
+                            "$ref": "#/definitions/common.User"
                         }
                     }
                 ],
@@ -61,17 +61,19 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/common.OperationResponse"
+                            "$ref": "#/definitions/common.DataResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/common.OperationResponse"
+                            "$ref": "#/definitions/common.DataResponse"
                         }
                     }
                 }
-            },
+            }
+        },
+        "/user": {
             "post": {
                 "description": "用户注册",
                 "consumes": [
@@ -111,45 +113,469 @@ var doc = `{
                 }
             }
         },
-        "/user/rule": {
+        "/user/rule/add": {
             "post": {
-                "description": "addRule",
                 "consumes": [
                     "application/json"
                 ],
                 "produces": [
                     "application/json"
                 ],
-                "summary": "addRule",
+                "tags": [
+                    "rule"
+                ],
+                "summary": "增加规则",
                 "parameters": [
                     {
-                        "description": "test",
-                        "name": "rule",
+                        "description": "必须给定server_id 、content，uri_id可选 type为get\\post\\ua\\header\\cookie之一",
+                        "name": "rulePageForm",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/common.Account"
+                            "$ref": "#/definitions/common.RulePage"
                         }
-                    },
-                    {
-                        "type": "string",
-                        "description": "test",
-                        "name": "token",
-                        "in": "header",
-                        "required": true
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "test",
+                        "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/common.Account"
+                            "$ref": "#/definitions/common.OperationResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/rule/delete": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "rule"
+                ],
+                "summary": "删除规则",
+                "parameters": [
+                    {
+                        "description": "必须给定server_id ，uri_id可选 type为get\\post\\ua\\header\\cookie之一",
+                        "name": "rulePageForm",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/common.RulePage"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/common.OperationResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/rule/get": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "rule"
+                ],
+                "summary": "获取规则",
+                "parameters": [
+                    {
+                        "description": "page为页号，limit为一页的最大数量，类型为get\\post\\ua\\header\\cookie之一",
+                        "name": "rulePageForm",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/common.RulePage"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/common.DataResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/common.Rule"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/user/server/delete": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "server"
+                ],
+                "summary": "删除服务",
+                "parameters": [
+                    {
+                        "description": "server_id为必要",
+                        "name": "servers",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/common.GetServerForm"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/common.OperationResponse"
                         }
                     },
                     "400": {
-                        "description": "test",
+                        "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/common.Account"
+                            "$ref": "#/definitions/common.DataResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/server/get": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "server"
+                ],
+                "summary": "添加Server",
+                "parameters": [
+                    {
+                        "description": "服务器列表",
+                        "name": "servers",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/common.Server"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/common.DataResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/common.Server"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/common.DataResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/switch/change": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "switch"
+                ],
+                "summary": "修改Server Switch或者URI Switch",
+                "parameters": [
+                    {
+                        "description": "必须填写config_name；不给uri_id则修改server",
+                        "name": "switchForm",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/common.SwitchOperation"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/common.OperationResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/switch/get": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "switch"
+                ],
+                "summary": "修改Server Switch或者URI Switch",
+                "parameters": [
+                    {
+                        "description": "server_id必填 uri_id选填",
+                        "name": "switchForm",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/common.SwitchOperation"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/common.DataResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/common.BaseSwitch"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/user/switch/waf": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "switch"
+                ],
+                "summary": "控制waf开关",
+                "parameters": [
+                    {
+                        "description": "可以不填写config_name",
+                        "name": "switchForm",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/common.SwitchOperation"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/common.OperationResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/uri/add": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "uri"
+                ],
+                "summary": "增加URI",
+                "parameters": [
+                    {
+                        "description": "server_id、path必填",
+                        "name": "uri",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/common.URI"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/common.DataResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/common.Server"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/common.DataResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/uri/delete": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "uri"
+                ],
+                "summary": "删除URI",
+                "parameters": [
+                    {
+                        "description": "server_id、id必填",
+                        "name": "uri",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/common.URI"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/common.OperationResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/common.DataResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/uri/get": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "uri"
+                ],
+                "summary": "获取URI",
+                "parameters": [
+                    {
+                        "description": "server_id必填",
+                        "name": "uri",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/common.GetURIForm"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/common.DataResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/common.URI"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/common.DataResponse"
                         }
                     }
                 }
@@ -157,14 +583,82 @@ var doc = `{
         }
     },
     "definitions": {
-        "common.Account": {
+        "common.BaseSwitch": {
             "type": "object",
             "properties": {
-                "id": {
-                    "type": "string"
+                "cc_defense": {
+                    "type": "boolean"
                 },
-                "name": {
+                "cookie_check": {
+                    "type": "boolean"
+                },
+                "get_args_check": {
+                    "type": "boolean"
+                },
+                "ip_blacklist": {
+                    "type": "boolean"
+                },
+                "ip_whitelist": {
+                    "type": "boolean"
+                },
+                "post_args_check": {
+                    "type": "boolean"
+                },
+                "sql_token_check": {
+                    "type": "boolean"
+                },
+                "ua_check": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "common.CustomSwitch": {
+            "type": "object",
+            "properties": {
+                "cookie_check": {
+                    "type": "boolean"
+                },
+                "get_args_check": {
+                    "type": "boolean"
+                },
+                "ip_blacklist": {
+                    "type": "boolean"
+                },
+                "ip_whitelist": {
+                    "type": "boolean"
+                },
+                "post_args_check": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "common.DataResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "type": "object"
+                },
+                "msg": {
                     "type": "string"
+                }
+            }
+        },
+        "common.GetServerForm": {
+            "type": "object",
+            "properties": {
+                "server_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "common.GetURIForm": {
+            "type": "object",
+            "properties": {
+                "server_id": {
+                    "type": "integer"
                 }
             }
         },
@@ -179,11 +673,144 @@ var doc = `{
                 }
             }
         },
-        "common.UpdatePasswordForm": {
+        "common.Option": {
             "type": "object",
             "properties": {
+                "ccrate": {
+                    "type": "string"
+                },
+                "proxyPass": {
+                    "type": "string"
+                }
+            }
+        },
+        "common.Rule": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "flag": {
+                    "type": "string"
+                },
+                "hit": {
+                    "type": "integer"
+                },
+                "host": {
+                    "type": "string"
+                },
+                "server_id": {
+                    "type": "integer"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "uri": {
+                    "type": "string"
+                },
+                "uri_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "common.RulePage": {
+            "type": "object",
+            "properties": {
+                "flag": {
+                    "type": "string"
+                },
+                "limit": {
+                    "type": "integer"
+                },
+                "page": {
+                    "type": "integer"
+                },
+                "server_id": {
+                    "type": "integer"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "uri_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "common.Server": {
+            "type": "object",
+            "properties": {
+                "domain": {
+                    "type": "string"
+                },
+                "ip": {
+                    "type": "string"
+                },
+                "option": {
+                    "type": "object",
+                    "$ref": "#/definitions/common.Option"
+                },
+                "uri": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/common.URI"
+                    }
+                },
+                "user_id": {
+                    "type": "integer"
+                },
+                "waf_status": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "common.SwitchOperation": {
+            "type": "object",
+            "properties": {
+                "config_name": {
+                    "type": "string"
+                },
+                "config_value": {
+                    "type": "boolean"
+                },
+                "server_id": {
+                    "type": "integer"
+                },
+                "uri_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "common.URI": {
+            "type": "object",
+            "properties": {
+                "host": {
+                    "type": "string"
+                },
+                "path": {
+                    "type": "string"
+                },
+                "server_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "common.User": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
                 "password": {
                     "type": "string"
+                },
+                "servers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/common.Server"
+                    }
                 }
             }
         }

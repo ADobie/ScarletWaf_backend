@@ -3,7 +3,6 @@ package controller
 import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
-	"net/http"
 	"scarlet/common"
 	"scarlet/tool"
 )
@@ -51,9 +50,7 @@ func LoginRequired() gin.HandlerFunc {
 
 func JWT() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var val *http.Cookie
-		var err error
-		if val, err = c.Request.Cookie("SCARLET"); err != nil {
+		if val := c.Request.Header.Get(JWTNAME); val == "" {
 			session := jwt.MapClaims{}
 			session["login"] = false
 			c.Set("session", session)
@@ -61,7 +58,7 @@ func JWT() gin.HandlerFunc {
 			return
 			// set cookie with session
 		} else {
-			token, err := jwt.Parse(val.Value, func(token *jwt.Token) (i interface{}, err error) {
+			token, err := jwt.Parse(val, func(token *jwt.Token) (i interface{}, err error) {
 				return secret, nil
 			})
 			if err != nil {
@@ -86,6 +83,6 @@ func JWT() gin.HandlerFunc {
 func saveSession(c *gin.Context, session jwt.MapClaims) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, session)
 	data, _ := token.SignedString(secret)
-	c.SetCookie(JWTNAME, data, 3600, "/", "localhost", 1, true, true)
+	c.Writer.Header().Set(JWTNAME, data)
 	return
 }

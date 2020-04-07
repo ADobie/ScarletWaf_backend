@@ -12,6 +12,14 @@ import (
 
 var configService = service.NewConfigService()
 
+//@Summary 控制waf开关
+//@Tags switch
+//@Accept json
+//@Produce json
+//@Param switchForm body common.SwitchOperation true "可以不填写config_name"
+//@Success 200 {object} common.OperationResponse true
+//@Response 400 common.DataResponse true
+//@Router /user/switch/waf [POST]
 func WafStatus(c *gin.Context) {
 	var user common.User
 	session := c.MustGet("session").(jwt.MapClaims)
@@ -57,6 +65,14 @@ func WafStatus(c *gin.Context) {
 	}
 }
 
+//@Summary 修改Server Switch或者URI Switch
+//@Tags switch
+//@Accept json
+//@Produce json
+//@Param switchForm body common.SwitchOperation true "必须填写config_name；不给uri_id则修改server"
+//@Success 200 {object} common.OperationResponse true
+//@Response 400 common.DataResponse true
+//@Router /user/switch/change [POST]
 func ChangeSwitch(c *gin.Context) {
 	var user common.User
 	session := c.MustGet("session").(jwt.MapClaims)
@@ -109,6 +125,15 @@ func ChangeSwitch(c *gin.Context) {
 
 }
 
+//@Summary 修改Server Switch或者URI Switch
+//@Tags switch
+//@Accept json
+//@Produce json
+//@Param switchForm body common.SwitchOperation true "server_id必填 uri_id选填"
+//@Success 200 {object} common.DataResponse{data=common.CustomSwitch} true
+//@Success 200 {object} common.DataResponse{data=common.BaseSwitch} true
+//@Response 400 common.DataResponse true
+//@Router /user/switch/get [POST]
 func GetSwitch(c *gin.Context) {
 	var user common.User
 	session := c.MustGet("session").(jwt.MapClaims)
