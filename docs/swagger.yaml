@@ -1,37 +1,5 @@
 basePath: /
 definitions:
-  common.BaseSwitch:
-    properties:
-      cc_defense:
-        type: boolean
-      cookie_check:
-        type: boolean
-      get_args_check:
-        type: boolean
-      ip_blacklist:
-        type: boolean
-      ip_whitelist:
-        type: boolean
-      post_args_check:
-        type: boolean
-      sql_token_check:
-        type: boolean
-      ua_check:
-        type: boolean
-    type: object
-  common.CustomSwitch:
-    properties:
-      cookie_check:
-        type: boolean
-      get_args_check:
-        type: boolean
-      ip_blacklist:
-        type: boolean
-      ip_whitelist:
-        type: boolean
-      post_args_check:
-        type: boolean
-    type: object
   common.DataResponse:
     properties:
       code:
@@ -50,13 +18,6 @@ definitions:
     properties:
       server_id:
         type: integer
-    type: object
-  common.OperationResponse:
-    properties:
-      code:
-        type: integer
-      msg:
-        type: string
     type: object
   common.Option:
     properties:
@@ -145,10 +106,6 @@ definitions:
         type: string
       password:
         type: string
-      servers:
-        items:
-          $ref: '#/definitions/common.Server'
-        type: array
     type: object
 host: localhost:8080
 info:
@@ -201,18 +158,18 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/common.OperationResponse'
+          $ref: '#/definitions/common.DataResponse'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/common.OperationResponse'
+            $ref: '#/definitions/common.DataResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/common.OperationResponse'
+            $ref: '#/definitions/common.DataResponse'
       summary: 用户注册
       tags:
       - User
@@ -233,7 +190,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/common.OperationResponse'
+            $ref: '#/definitions/common.DataResponse'
       summary: 增加规则
       tags:
       - rule
@@ -254,7 +211,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/common.OperationResponse'
+            $ref: '#/definitions/common.DataResponse'
       summary: 删除规则
       tags:
       - rule
@@ -303,7 +260,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/common.OperationResponse'
+            $ref: '#/definitions/common.DataResponse'
         "400":
           description: Bad Request
           schema:
@@ -362,33 +319,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/common.OperationResponse'
-      summary: 修改Server Switch或者URI Switch
-      tags:
-      - switch
-  /user/switch/get:
-    post:
-      consumes:
-      - application/json
-      parameters:
-      - description: server_id必填 uri_id选填
-        in: body
-        name: switchForm
-        required: true
-        schema:
-          $ref: '#/definitions/common.SwitchOperation'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            allOf:
-            - $ref: '#/definitions/common.DataResponse'
-            - properties:
-                data:
-                  $ref: '#/definitions/common.BaseSwitch'
-              type: object
+            $ref: '#/definitions/common.DataResponse'
       summary: 修改Server Switch或者URI Switch
       tags:
       - switch
@@ -409,7 +340,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/common.OperationResponse'
+            $ref: '#/definitions/common.DataResponse'
       summary: 控制waf开关
       tags:
       - switch
@@ -462,7 +393,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/common.OperationResponse'
+            $ref: '#/definitions/common.DataResponse'
         "400":
           description: Bad Request
           schema:

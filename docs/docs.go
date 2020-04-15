@@ -93,7 +93,7 @@ var doc = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/common.OperationResponse"
+                            "$ref": "#/definitions/common.DataResponse"
                         }
                     }
                 ],
@@ -101,13 +101,13 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/common.OperationResponse"
+                            "$ref": "#/definitions/common.DataResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/common.OperationResponse"
+                            "$ref": "#/definitions/common.DataResponse"
                         }
                     }
                 }
@@ -140,7 +140,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/common.OperationResponse"
+                            "$ref": "#/definitions/common.DataResponse"
                         }
                     }
                 }
@@ -173,7 +173,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/common.OperationResponse"
+                            "$ref": "#/definitions/common.DataResponse"
                         }
                     }
                 }
@@ -254,7 +254,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/common.OperationResponse"
+                            "$ref": "#/definitions/common.DataResponse"
                         }
                     },
                     "400": {
@@ -350,52 +350,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/common.OperationResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/user/switch/get": {
-            "post": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "switch"
-                ],
-                "summary": "修改Server Switch或者URI Switch",
-                "parameters": [
-                    {
-                        "description": "server_id必填 uri_id选填",
-                        "name": "switchForm",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/common.SwitchOperation"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/common.DataResponse"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/common.BaseSwitch"
-                                        }
-                                    }
-                                }
-                            ]
+                            "$ref": "#/definitions/common.DataResponse"
                         }
                     }
                 }
@@ -428,7 +383,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/common.OperationResponse"
+                            "$ref": "#/definitions/common.DataResponse"
                         }
                     }
                 }
@@ -515,7 +470,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/common.OperationResponse"
+                            "$ref": "#/definitions/common.DataResponse"
                         }
                     },
                     "400": {
@@ -583,55 +538,6 @@ var doc = `{
         }
     },
     "definitions": {
-        "common.BaseSwitch": {
-            "type": "object",
-            "properties": {
-                "cc_defense": {
-                    "type": "boolean"
-                },
-                "cookie_check": {
-                    "type": "boolean"
-                },
-                "get_args_check": {
-                    "type": "boolean"
-                },
-                "ip_blacklist": {
-                    "type": "boolean"
-                },
-                "ip_whitelist": {
-                    "type": "boolean"
-                },
-                "post_args_check": {
-                    "type": "boolean"
-                },
-                "sql_token_check": {
-                    "type": "boolean"
-                },
-                "ua_check": {
-                    "type": "boolean"
-                }
-            }
-        },
-        "common.CustomSwitch": {
-            "type": "object",
-            "properties": {
-                "cookie_check": {
-                    "type": "boolean"
-                },
-                "get_args_check": {
-                    "type": "boolean"
-                },
-                "ip_blacklist": {
-                    "type": "boolean"
-                },
-                "ip_whitelist": {
-                    "type": "boolean"
-                },
-                "post_args_check": {
-                    "type": "boolean"
-                }
-            }
-        },
         "common.DataResponse": {
             "type": "object",
             "properties": {
@@ -659,17 +565,6 @@ var doc = `{
             "properties": {
                 "server_id": {
                     "type": "integer"
-                }
-            }
-        },
-        "common.OperationResponse": {
-            "type": "object",
-            "properties": {
-                "code": {
-                    "type": "integer"
-                },
-                "msg": {
-                    "type": "string"
                 }
             }
         },
@@ -805,12 +700,6 @@ var doc = `{
                 },
                 "password": {
                     "type": "string"
-                },
-                "servers": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/common.Server"
-                    }
                 }
             }
         }

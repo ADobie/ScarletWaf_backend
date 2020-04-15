@@ -1,10 +1,8 @@
 package controller
 
 import (
-	"encoding/json"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
 	"scarlet/common"
 )
 
@@ -20,11 +18,7 @@ func GetServers(c *gin.Context) {
 	var user common.User
 	session := c.MustGet("session").(jwt.MapClaims)
 	user = session["user"].(common.User)
-	c.JSON(200, common.DataResponse{
-		Code: 200,
-		Msg:  "获取成功🐳",
-		Data: serverService.GetByUserID(user.ID),
-	})
+	Success(c, "获取成功🐳", serverService.GetByUserID(user.ID))
 }
 
 // @Summary 删除服务
@@ -33,7 +27,7 @@ func GetServers(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param servers body  common.GetServerForm true "server_id为必要"
-// @Success 200 {object} common.OperationResponse
+// @Success 200 {object} common.DataResponse
 // @Failure 400 {object} common.DataResponse
 // @Router /user/server/delete [post] 'Login required'
 func DeleteServer(c *gin.Context) {
@@ -42,36 +36,19 @@ func DeleteServer(c *gin.Context) {
 	session := c.MustGet("session").(jwt.MapClaims)
 	user = session["user"].(common.User)
 	err := c.ShouldBindJSON(&form)
-	if err != nil {
-		c.JSON(400, common.DataResponse{
-			Code: 400,
-			Msg:  "Error Binding JSON data" + err.Error(),
-			Data: nil,
-		})
+	if OnJSONError(c, err) {
 		return
 	}
 	err = form.Validate()
-	if err != nil {
-		data, _ := json.Marshal(err)
-		c.JSON(406, common.DataResponse{
-			Code: 406,
-			Msg:  "表单不合法",
-			Data: string(data),
-		})
+	if OnValidateError(c, err) {
 		return
 	}
 	if serverService.Own(user.ID, form.ServerID) {
 		serverService.Delete(form.ServerID)
-		c.JSON(200, common.OperationResponse{
-			Code: 200,
-			Msg:  "删除成功",
-		})
+		Success(c, "删除成功", nil)
 		return
 	} else {
-		c.JSON(401, common.OperationResponse{
-			Code: 401,
-			Msg:  "越权操作",
-		})
+		Failure(c, "越权操作", nil)
 		return
 	}
 }
@@ -87,16 +64,13 @@ func DeleteServer(c *gin.Context) {
 func AddServer(c *gin.Context) {
 	var servers []common.Server
 	err := c.ShouldBindJSON(&servers)
-	if err != nil {
-		logrus.WithField("Handler", "UpdateServer").Fatal("绑定json错误")
+	if OnJSONError(c, err) {
+		return
 	}
 	var user common.User
 	session := c.MustGet("session").(jwt.MapClaims)
 	user = session["user"].(common.User)
 	user.Servers = servers
 	userService.UpdateServers(user)
-	c.JSON(200, common.OperationResponse{
-		Code: 200,
-		Msg:  "添加成功",
-	})
+	Success(c, "添加成功", nil)
 }

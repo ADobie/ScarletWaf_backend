@@ -28,7 +28,7 @@ type User struct {
 	Name     string   `json:"name"`
 	Email    string   `json:"email"`
 	Password string   `json:"password"`
-	Servers  []Server `json:"servers"`
+	Servers  []Server `json:"servers" swaggerignore:"true"`
 }
 
 type URI struct {

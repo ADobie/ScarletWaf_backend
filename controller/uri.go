@@ -1,11 +1,9 @@
 package controller
 
 import (
-	"encoding/json"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"scarlet/common"
-	"scarlet/tool"
 )
 
 // @Summary 增加URI
@@ -22,45 +20,24 @@ func AddURI(c *gin.Context) {
 	user = session["user"].(common.User)
 	uri := common.URI{}
 	err := c.ShouldBindJSON(&uri)
-	if err != nil {
-		tool.GetLogger().WithField("handler", "AddURI").Debug("JSON绑定失败", err)
-		c.JSON(400, common.DataResponse{
-			Code: 400,
-			Msg:  "JSON数据不合法" + err.Error(),
-			Data: nil,
-		})
+	if OnJSONError(c, err) {
+		return
+	}
+	err = uri.Validate()
+	if OnValidateError(c, err) {
+		return
+	}
+	if !serverService.Own(user.ID, uri.ServerID) {
+		Failure(c, "越权操作", nil)
+		return
+	} else if !(uriService.Exist(uri)) {
+		server := serverService.Get(uri.ServerID)
+		uri.Host = server.Domain
+		uriService.Add(uri)
+		Success(c, "添加成功", nil)
 		return
 	} else {
-		if err := uri.Validate(); err != nil {
-			data, _ := json.Marshal(err)
-			c.JSON(400, common.DataResponse{
-				Code: 400,
-				Msg:  "表单不合法",
-				Data: string(data),
-			})
-			return
-		}
-		if !serverService.Own(user.ID, uri.ServerID) {
-			c.JSON(401, common.OperationResponse{
-				Code: 401,
-				Msg:  "越权操作",
-			})
-			return
-		} else if !(uriService.Exist(uri)) {
-			server := serverService.Get(uri.ServerID)
-			uri.Host = server.Domain
-			uriService.Add(uri)
-			c.JSON(200, common.OperationResponse{
-				Code: 200,
-				Msg:  "添加成功",
-			})
-			return
-		} else {
-			c.JSON(200, common.OperationResponse{
-				Code: 400,
-				Msg:  "已存在",
-			})
-		}
+		Failure(c, "已存在", nil)
 	}
 }
 
@@ -69,7 +46,7 @@ func AddURI(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param uri body common.URI true "server_id、id必填"
-// @Success 200 {object} common.OperationResponse
+// @Success 200 {object} common.DataResponse
 // @Failure 400 {object} common.DataResponse
 // @Router /user/uri/delete [post] 'Login required'
 func DeleteURI(c *gin.Context) {
@@ -78,39 +55,20 @@ func DeleteURI(c *gin.Context) {
 	user = session["user"].(common.User)
 	uri := common.URI{}
 	err := c.ShouldBindJSON(&uri)
-	if err != nil {
-		tool.GetLogger().WithField("handler", "AddURI").Debug("JSON绑定失败", err)
-		c.JSON(400, common.DataResponse{
-			Code: 400,
-			Msg:  "JSON数据不合法" + err.Error(),
-			Data: nil,
-		})
+	if OnJSONError(c, err) {
+		return
+	}
+	err = uri.Validate()
+	if OnValidateError(c, err) {
+		return
+	}
+	if serverService.Own(user.ID, uri.ServerID) && uriService.Own(uri.ID, uri.ServerID) {
+		uriService.Delete(uri)
+		Success(c, "删除成功", nil)
 		return
 	} else {
-		if err := uri.Validate(); err != nil {
-			data, _ := json.Marshal(err)
-			c.JSON(400, common.DataResponse{
-				Code: 400,
-				Msg:  "表单不合法",
-				Data: string(data),
-			})
-			return
-		}
-		if serverService.Own(user.ID, uri.ServerID) && uriService.Own(uri.ID, uri.ServerID) {
-			uriService.Delete(uri)
-			c.JSON(200, common.OperationResponse{
-				Code: 200,
-				Msg:  "删除成功",
-			})
-
-			return
-		} else {
-			c.JSON(401, common.OperationResponse{
-				Code: 401,
-				Msg:  "越权操作",
-			})
-			return
-		}
+		Failure(c, "越权操作", nil)
+		return
 	}
 }
 
@@ -128,36 +86,19 @@ func GetURI(c *gin.Context) {
 	session := c.MustGet("session").(jwt.MapClaims)
 	user = session["user"].(common.User)
 	err := c.ShouldBindJSON(&form)
-	if err != nil {
-		c.JSON(400, common.DataResponse{
-			Code: 400,
-			Msg:  "JSON绑定错误" + err.Error(),
-			Data: nil,
-		})
+	if OnJSONError(c, err) {
 		return
 	}
-	if err = form.Validate(); err != nil {
-		data, _ := json.Marshal(err)
-		c.JSON(400, common.DataResponse{
-			Code: 400,
-			Msg:  "表单不合法",
-			Data: string(data),
-		})
+	err = form.Validate()
+	if OnValidateError(c, err) {
+		return
 	}
 	if serverService.Own(user.ID, form.ServerID) {
 		uris := uriService.GetByServerID(form.ServerID)
-		c.JSON(200, common.DataResponse{
-			Code: 200,
-			Msg:  "返回成功",
-			Data: uris,
-		})
+		Success(c, "获取成功", uris)
 		return
 	} else {
-		c.JSON(401, common.DataResponse{
-			Code: 401,
-			Msg:  "越权操作",
-			Data: nil,
-		})
+		Failure(c, "越权操作", nil)
 		return
 	}
 }

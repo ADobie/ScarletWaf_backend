@@ -1,0 +1,10 @@
+[mysql]
+  addr = "127.0.0.1:3306"
+  database = "scarlet"
+  username = "scarlet"
+  password = "scarlet"
+
+[redis]
+  addr = "127.0.0.1:6379"
+  database = 0
+  password = ""

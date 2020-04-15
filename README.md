@@ -9,13 +9,18 @@ The backend of scarlet
 
 ### TODO
 
-- 配置文件读取（现在还有BUG总之没实现
-- <del>各类基本CURD API</del>
-- 日志处理。waf_core会产生日志到一个 per user的List中，后端读取、存储。也要考虑编排多用户的文件路径、考虑如何返回给前端
-- CPU信息+内存占用+硬盘读写速度、资源监控
+* [x] 配置文件读取（现在还有BUG总之没实现
+* [x] 各类基本CURD API
+* [ ] 日志处理。waf_core会产生日志到一个 per user的List中，后端读取、存储。也要考虑编排多用户的文件路径、考虑如何返回给前端
+* [x]  CPU信息+内存占用+硬盘读写速度、资源监控[monitor](https://github.com/hades300/monitor)
 
 
 ### ChangeLog
+
+#### 4-15
+
+- 增加配置读写
+- 增加信号捕获
 
 
 #### 4-7
