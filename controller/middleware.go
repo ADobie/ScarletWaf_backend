@@ -83,9 +83,43 @@ func JWT() gin.HandlerFunc {
 	}
 }
 
+func JWT_TOKEN() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		val := c.Request.Header.Get(JWTNAME)
+		if val == "" {
+			session := jwt.MapClaims{}
+			session["login"] = false
+			c.Set("session", session)
+			c.Next()
+			return
+			// set cookie with session
+		} else {
+			token, err := jwt.Parse(val, func(token *jwt.Token) (i interface{}, err error) {
+				return secret, nil
+			})
+			if err != nil {
+				tool.GetLogger().WithField("JWT", err).Warn("签名不合法、解析发生错误")
+				c.JSON(400, common.DataResponse{
+					Code: 400,
+					Msg:  "Hacker!",
+					Data: nil,
+				})
+				c.Abort()
+				return
+			} else {
+				var session = token.Claims.(jwt.MapClaims)
+				c.Set("session", session)
+				c.Next()
+				// set cookie with session
+			}
+		}
+	}
+}
+
 func saveSession(c *gin.Context, session jwt.MapClaims) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, session)
 	data, _ := token.SignedString(secret)
-	c.SetCookie(JWTNAME, data, 3600, "/", ".localhost", 0, true, true)
+	//c.SetCookie(JWTNAME, data, 3600, "/", ".localhost", 0, true, true)
+	c.Writer.Header().Set(JWTNAME, string(data))
 	return
 }

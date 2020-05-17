@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"scarlet/common"
 	"scarlet/service"
+	"strings"
 )
 
 var configService = service.NewConfigService()
@@ -57,7 +58,7 @@ func ChangeSwitch(c *gin.Context) {
 	if OnJSONError(c, err) {
 		return
 	}
-	switchForm.ConfigName = common.AbbrMap[switchForm.ConfigName]
+	switchForm.ConfigName = strings.ToLower(switchForm.ConfigName)
 	switchForm.Format()
 	err = switchForm.Validate()
 	if OnValidateError(c, err) {
@@ -89,13 +90,11 @@ func GetSwitch(c *gin.Context) {
 	var user common.User
 	session := c.MustGet("session").(jwt.MapClaims)
 	user = session["user"].(common.User)
-	switchForm := common.SwitchOperation{}
+	switchForm := common.GetSwitchForm{}
 	err := c.ShouldBindJSON(&switchForm)
 	if OnJSONError(c, err) {
 		return
 	}
-	switchForm.ConfigName = common.AbbrMap[switchForm.ConfigName]
-	switchForm.Format()
 	err = switchForm.Validate()
 	if OnValidateError(c, err) {
 		return
@@ -112,7 +111,7 @@ func GetSwitch(c *gin.Context) {
 	if switchForm.URIID != 0 {
 		res = configService.GetCustomSwitch(switchForm.URIID)
 	} else {
-		res = configService.GetBaseSwitch(switchForm.URIID)
+		res = configService.GetBaseSwitch(switchForm.ServerID)
 	}
 	Success(c, "获取成功", res)
 	return

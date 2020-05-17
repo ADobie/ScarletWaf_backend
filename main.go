@@ -19,7 +19,7 @@ import (
 // @title Scarlet Backend
 // @version 1.0
 // @description This is a sample server celler server.
-// @termsOfService http://swagger.io/terms/
+// @termsOfService http://swagger.io/terms/w
 
 // @contact.name API Support
 // @contact.url http://www.swagger.io/support
@@ -33,7 +33,18 @@ import (
 // @query.collection.format multi
 func main() {
 	r := gin.Default()
-	r.Use(controller.JWT())
+	r.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"*"},
+		AllowMethods:     []string{"POST", "GET", "OPTIONS"},
+		AllowHeaders:     []string{"Origin", controller.JWTNAME, "Set-Cookie", "Cookie", "Content-Type"},
+		ExposeHeaders:    []string{"Content-Length", controller.JWTNAME, "Set-Cookie", "Cookie", "Content-Type"},
+		AllowCredentials: true,
+		AllowOriginFunc: func(origin string) bool {
+			return origin == "https://github.com"
+		},
+		MaxAge: 12 * time.Hour,
+	}))
+	r.Use(controller.JWT_TOKEN())
 	r.POST("/user", controller.AddUser)
 	r.POST("/login", controller.UserLogin)
 
@@ -60,22 +71,14 @@ func main() {
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"*"},
-		AllowMethods:     []string{"POST", "GET", "OPTION"},
-		AllowHeaders:     []string{"Origin"},
-		ExposeHeaders:    []string{"Content-Length", controller.JWTNAME},
-		AllowCredentials: true,
-		AllowOriginFunc: func(origin string) bool {
-			return origin == "https://github.com"
-		},
-		MaxAge: 12 * time.Hour,
-	}))
-
 	go GraceFullyShutDown()
 
-	if err := r.Run(":8080"); err != nil {
-		tool.GetLogger().Fatal("Address Already Used")
+	addr := tool.GetConfig().Scarlet.Addr
+	if addr == "" {
+		addr = ":8080"
+	}
+	if err := r.Run(addr); err != nil {
+		tool.GetLogger().Fatal("Address Already Used " + addr)
 	}
 }
 

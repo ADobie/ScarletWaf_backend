@@ -13,9 +13,14 @@ type RedisConf struct {
 	Password string `toml:"password"`
 }
 
+type ScarletConf struct {
+	Addr string `toml:"addr"`
+}
+
 type Conf struct {
-	Mysql MysqlConf `toml:"mysql"`
-	Redis RedisConf `toml:"redis"`
+	Mysql   MysqlConf   `toml:"mysql"`
+	Redis   RedisConf   `toml:"redis"`
+	Scarlet ScarletConf `toml:"scarlet"`
 }
 
 var DEVELOP = true

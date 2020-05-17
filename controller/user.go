@@ -30,43 +30,27 @@ func AddUser(c *gin.Context) {
 	user := common.User{}
 	err := c.ShouldBindJSON(&user)
 	if err != nil && common.DEVELOP {
-		logrus.WithField("Handler", "Add").Fatal("绑定json错误")
-		c.JSON(400, common.DataResponse{
-			Code: 400,
-			Msg:  "绑定JSON错误" + err.Error(),
-			Data: nil,
-		})
+		logrus.WithField("Handler", "Add").Debug("绑定json错误")
+		Failure(c, "绑定JSON错误"+err.Error(), nil)
 		return
 	}
 	errs := user.Validate()
 	fmt.Printf("%v", errs)
 	if errs != nil {
 		if e, ok := errs.(validation.InternalError); ok {
-			logrus.WithField("Handler", "Add").Fatal("规则错误", e.InternalError())
+			logrus.WithField("Handler", "Add").Debug("规则错误", e.InternalError())
 		} else {
 			data, _ := json.Marshal(e)
-			c.JSON(400, common.DataResponse{
-				Code: 400,
-				Msg:  "用户不合法",
-				Data: string(data),
-			})
+			Failure(c, "用户不合法", string(data))
 			return
 		}
 	}
 	if !userService.Exist(user) {
 		userService.Add(user)
-		c.JSON(200, common.DataResponse{
-			Code: 200,
-			Msg:  "注册成功",
-			Data: nil,
-		})
+		Success(c, "注册成功", nil)
 		return
 	} else {
-		c.JSON(400, common.DataResponse{
-			Code: 400,
-			Msg:  "用户已存在",
-			Data: nil,
-		})
+		Failure(c, "用户已存在", nil)
 		return
 	}
 }

@@ -14,13 +14,16 @@ import (
 var temp = `
 [redis]
 addr = "127.0.0.1:6379"
-password = "123456"
+password = ""
 
 [mysql]
 addr = "127.0.0.1:3306"
 database = "scarlet"
 password = "123456"
-username = "scarlet"`
+username = "scarlet"
+
+[scarlet]
+addr = "0.0.0.0:8080"`
 
 var PROJECT_DIR, _ = os.Getwd()
 var Conf common.Conf
@@ -32,6 +35,7 @@ func init() {
 		fmt.Printf("%+v\n", Conf)
 	} else {
 		Install()
+		Conf = readConf()
 	}
 }
 
@@ -71,9 +75,13 @@ func Install() {
 	if input, useDefault = readFromStdin(); !useDefault {
 		conf.Redis.Addr = input
 	}
-	fmt.Printf("[+] Redis 密码(默认为: 123456):")
+	fmt.Printf("[+] Redis 密码(默认为空):")
 	if input, useDefault = readFromStdin(); !useDefault {
 		conf.Redis.Password = input
+	}
+	fmt.Printf("[+] Scarlet 运行端口(默认为0.0.0.0:8080):")
+	if input, useDefault = readFromStdin(); !useDefault {
+		conf.Scarlet.Addr = input
 	}
 	writeConf(conf)
 	fmt.Printf("[+] 配置写入成功\n")
